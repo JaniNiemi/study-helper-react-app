@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Study from "./views/Study";
+import History from "./views/History";
+import Login from "./views/Login";
+import Signup from "./views/Signup";
+import AppContainer from "./components/UI/AppContainer";
+import Header from "./components/UI/Header";
+import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import Authprovider from "./store/auth/AuthProvider";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<Authprovider>
+			<BrowserRouter>
+				<AppContainer>
+					<Header />
+					<Switch>
+						<Route exact path="/" component={Study} />
+						<Route path="/history" component={History} />
+						<Route path="/login" component={Login} />
+						<Route path="/signup" component={Signup} />
+						{/* Redirect to main page if route not found */}
+						<Route path="*">
+							<Redirect to="/" />
+						</Route>
+					</Switch>
+				</AppContainer>
+			</BrowserRouter>
+		</Authprovider>
+	);
 }
 
 export default App;

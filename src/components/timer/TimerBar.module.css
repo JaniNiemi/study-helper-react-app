@@ -1,0 +1,27 @@
+.bar {
+	width: 100%;
+	height: 5rem;
+	background-color: rgb(238, 246, 248);
+	margin-top: 0.5rem;
+	position: relative;
+}
+
+.bar span {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: var(--font-white);
+	font-size: 3rem;
+	text-transform: uppercase;
+
+	text-shadow: 1px 1px 1px black, 0px 1px 1px black, 1px 0px 1px black,
+		1px -1px 1px black, 0px -1px 1px black, -1px 0px 1px black,
+		-1px 1px 1px black, -1px -1px 1px black;
+}
+
+.bar div {
+	height: 100%;
+	background-color: rgb(27, 15, 59);
+	transition: width 0.5s;
+}

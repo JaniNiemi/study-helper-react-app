@@ -1,0 +1,8 @@
+.container {
+  width: min(90%, 120rem);
+  margin: 3rem auto 0;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  background-color: #637bb4;
+  text-align: center;
+}

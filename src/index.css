@@ -1,13 +1,76 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;700&family=Marck+Script&display=swap");
+
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+:root {
+	--font-white: rgb(219, 231, 236);
+	--font-dark: rgb(18, 9, 43);
+
+	--font-large: 5rem;
+	--font-medium: 2.5rem;
+	--font-regular: 1.9rem;
+	--font-small: 1.6rem;
+	--font-xs: 1.3rem;
+
+	--color-dark: #1b0f3b;
+	--color-primary: #637bb4;
+	--color-light: #dfe4f0;
+
+	--color-danger: rgb(206, 11, 11);
+}
+
+html {
+	font-size: 62.5%;
+}
+@media screen and (max-width: 43.75em) {
+	html {
+		font-size: 58%;
+	}
+}
+
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+		"Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+		"Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: "Comfortaa", sans-serif;
+	background-color: #252f3b;
+	color: var(--font-white);
+}
+
+h1 {
+	font-family: "Marck Script", cursive;
+}
+
+h1 {
+	font-size: var(--font-large);
+}
+
+h2 {
+	font-size: var(--font-medium);
+	margin-bottom: 1rem;
+}
+
+p {
+	font-size: var(--font-regular);
+	line-height: 150%;
+}
+
+/* Utility class */
+.invalid {
+	color: rgb(160, 33, 10);
+	font-size: var(--font-medium);
+	font-weight: 700;
+}
+input.invalid {
+	background-color: rgb(230, 154, 154);
+	color: rgb(83, 19, 19);
 }

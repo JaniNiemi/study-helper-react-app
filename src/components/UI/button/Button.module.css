@@ -1,0 +1,37 @@
+.btn {
+	cursor: pointer;
+	font-family: inherit;
+	font-size: var(--font-regular);
+	padding: 1rem;
+	margin: 0.5rem;
+	border: none;
+	border: 2px solid var(--color-dark);
+	border-radius: 0.5rem;
+	background-color: var(--color-light);
+	transition: all 0.3s;
+}
+
+.btn:disabled {
+	cursor: not-allowed;
+	background-color: gray;
+	border-color: darkgray;
+	color: black;
+}
+.btn:disabled:hover {
+	transform: none;
+	box-shadow: none;
+}
+
+.btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 0.5rem 0.5rem rgba(27, 15, 59, 0.5);
+}
+.btn:active {
+	transform: translateY(1px);
+	box-shadow: none;
+}
+
+.btn-danger {
+	background-color: var(--color-danger);
+	color: var(--font-white);
+}

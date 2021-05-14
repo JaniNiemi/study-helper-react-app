@@ -1,0 +1,26 @@
+.history table {
+	width: 100%;
+	font-size: var(--font-small);
+  text-align: left;
+  font-weight: 500;
+  border-spacing: 0;
+}
+
+.history table thead {
+  background-color: var(--color-light);
+  color: var(--font-dark);
+}
+
+.history table tr:nth-child(2n) {
+  background-color: var(--color-light);
+  color: var(--font-dark);
+}
+
+.history table tr th,
+.history table tr td {
+	padding: 0.8rem 1rem;
+}
+
+.history table tr th {
+	font-size: var(--font-regular);
+}

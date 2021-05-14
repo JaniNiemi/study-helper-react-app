@@ -1,0 +1,61 @@
+.nav ul {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+/* 43.75em === 700px by default */
+@media screen and (max-width: 43.75em) {
+	.nav ul {
+		flex-direction: column;
+	}
+}
+
+.nav ul li {
+	list-style: none;
+	font-size: var(--font-regular);
+	margin: 1rem;
+	position: relative;
+}
+
+.nav ul li:not(:last-child) {
+	margin-right: 2.2rem;
+}
+
+.nav ul li a,
+.nav ul li a:link,
+.nav ul li a:visited {
+	color: var(--font-white);
+	text-decoration: none;
+}
+
+.nav ul li a:not(.login-btn)::after {
+	content: "";
+	position: absolute;
+	bottom: -0.5rem;
+	left: 0;
+	height: 2px;
+	width: 0%;
+	background-color: transparent;
+	border-radius: 0.2rem;
+	transition: all 0.3s ease-in-out;
+}
+.nav ul li a:not(.login-btn):hover::after {
+	width: 100%;
+	background-color: var(--color-dark);
+}
+
+.nav ul li .login-btn,
+.nav ul li .login-btn:link,
+.nav ul li .login-btn:visited {
+	outline: 2px solid var(--color-dark);
+	background-color: var(--color-light);
+	color: var(--font-dark);
+	padding: 0.7rem;
+}
+
+.nav ul li .login-btn:hover,
+.nav ul li .login-btn:link:hover,
+.nav ul li .login-btn:visited:hover {
+	transform: translateY(-1px);
+}

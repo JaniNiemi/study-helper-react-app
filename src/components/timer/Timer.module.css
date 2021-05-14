@@ -1,0 +1,13 @@
+.timer {
+	font-size: var(--font-regular);
+}
+
+.inputs-container {
+	display: flex;
+	justify-content: center;
+}
+
+.time {
+	margin-top: 1.5rem;
+	font-size: var(--font-medium);
+}

@@ -1,0 +1,14 @@
+.form {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.form a,
+.form a:link,
+.form a:visited {
+	color: var(--font-white);
+	font-size: var(--font-small);
+}
