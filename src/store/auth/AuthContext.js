@@ -7,6 +7,7 @@ const AuthContext = createContext({
 	signUpUrl: "",
 	signIn: () => {},
 	logout: () => {},
+	checkLogin: () => {},
 });
 
 export default AuthContext;

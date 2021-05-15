@@ -50,6 +50,7 @@ const Login = (props) => {
 		setError(null);
 		setIsEmailValid(true);
 		setIsPasswordValid(true);
+		let data = null;
 		// Validate email and password
 		const formIsValid = checkFormValidity();
 		if (!formIsValid) return;
@@ -64,16 +65,19 @@ const Login = (props) => {
 					returnSecureToken: true,
 				}),
 			});
-			const data = await response.json();
-			console.log("DATA", data);
+			data = await response.json();
 			if (!response.ok) throw new Error(data.error.message);
-
-			context.signIn(data.localId);
+			// Check route params
+			// If saved session data exists -> save data after logging in
 		} catch (error) {
 			console.log("error", error);
+			data = null;
 			setError(error.message || "Invalid input");
 		}
 		setLoading(false);
+		if (data) {
+			context.signIn(data.localId);
+		}
 	};
 
 	if (loading) {

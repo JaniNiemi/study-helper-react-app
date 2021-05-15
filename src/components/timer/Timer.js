@@ -124,7 +124,7 @@ const Timer = () => {
 		setSecondsInput(0);
 	};
 
-	const timerPauseHandler = () => {
+	const timerPauseHandler = (reset = true) => {
 		if (!isTimerPaused) {
 			setPauseTime(new Date().getTime());
 		} else {
@@ -132,7 +132,9 @@ const Timer = () => {
 			setTargetTime((prevTime) => unpauseTime - pauseTime + prevTime);
 		}
 		setTimer(timeFromMilliseconds(targetTime - new Date().getTime()));
-		setIsTimerPaused((prevVal) => !prevVal);
+		if (reset) {
+			setIsTimerPaused((prevVal) => !prevVal);
+		}
 	};
 
 	const timerOutput = (time) => {
@@ -144,6 +146,7 @@ const Timer = () => {
 
 	const resetHandler = () => {
 		setIsTimerPaused(true);
+		timerPauseHandler(false);
 		setSessionResetConfirm(true);
 	};
 
@@ -165,18 +168,20 @@ const Timer = () => {
 	};
 
 	const saveSession = async () => {
+		const saveData = {
+			sessionName: handleSessionName(),
+			finished: new Date(),
+			sessionDuration: initialTime,
+			timeString: timerOutput(initialTime),
+		}
+
 		await fetch(
 			"https://study-helper-app-default-rtdb.europe-west1.firebasedatabase.app/" +
 				context.user +
 				".json",
 			{
 				method: "POST",
-				body: JSON.stringify({
-					sessionName: handleSessionName(),
-					finished: new Date(),
-					sessionDuration: initialTime,
-					timeString: timerOutput(initialTime),
-				}),
+				body: JSON.stringify(saveData),
 			}
 		);
 		// Switch page to history once session is finished and saved

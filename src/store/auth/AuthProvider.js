@@ -2,7 +2,8 @@ import { useReducer } from "react";
 import AuthContext from "./AuthContext";
 
 const initialState = {
-	user: "qLZaxxhhNYQQJc3K20Bhu0VHAwp2", //Placeholder until login functionality finished
+	// Refresh tokens? 
+	user: "",
 	token: null,
 	signUpUrl:
 		"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAV99CpqWOjFq2LxBbn-630eT10R7BrGTg",
@@ -13,13 +14,25 @@ const initialState = {
 const authReducer = (state, action) => {
 	switch (action.type) {
 		case "SIGN_IN":
+			localStorage.setItem("user", action.payload.user);
 			return {
 				...state,
 				user: action.payload.user,
 			};
 
 		case "LOGOUT":
+			localStorage.removeItem("user");
 			return initialState;
+
+		case "CHECK":
+			const user = localStorage.getItem("user");
+			if (user) {
+				return {
+					...state,
+					user,
+				};
+			}
+			return state;
 
 		default:
 			console.warn("Unknown action");
@@ -38,6 +51,10 @@ const Authprovider = (props) => {
 		dispatch({ type: "LOGOUT" });
 	};
 
+	const checkLoginHandler = () => {
+		dispatch({ type: "CHECK" });
+	};
+
 	const context = {
 		user: state.user,
 		token: state.token,
@@ -45,6 +62,7 @@ const Authprovider = (props) => {
 		signUpUrl: state.signUpUrl,
 		signIn: signInHandler,
 		logout: logoutHandler,
+		checkLogin: checkLoginHandler,
 	};
 
 	return (

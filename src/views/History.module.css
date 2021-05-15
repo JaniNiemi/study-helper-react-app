@@ -1,3 +1,9 @@
+.history a,
+.history a:link,
+.history a:visited {
+  color: var(--font-white);
+}
+
 .history table {
 	width: 100%;
 	font-size: var(--font-small);

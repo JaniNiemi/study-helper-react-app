@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Loader from "../components/UI/loader/Loader";
 import AuthContext from "../store/auth/AuthContext";
 import styles from "./History.module.css";
@@ -10,6 +11,10 @@ const History = (props) => {
 	const context = useContext(AuthContext);
 
 	const fetchStudyHistory = useCallback(async () => {
+		if (context.user === "") {
+			setLoading(false);
+			return;
+		}
 		setLoading(true);
 		const response = await fetch(
 			`https://study-helper-app-default-rtdb.europe-west1.firebasedatabase.app/${context.user}.json`
@@ -32,9 +37,16 @@ const History = (props) => {
 		return <Loader />;
 	}
 
-	return (
-		<main className={styles.history}>
-			<h2>Your study history</h2>
+	let content = "";
+
+	if (context.user === "") {
+		content = (
+			<Link to="/login">
+				<p>Log in to start saving your study sessions</p>
+			</Link>
+		);
+	} else {
+		content = (
 			<table>
 				<thead>
 					<tr>
@@ -47,12 +59,23 @@ const History = (props) => {
 					{history.map((item) => (
 						<tr key={item.finished}>
 							<td>{item.sessionName}</td>
-							<td>{new Date(item.finished).toLocaleString("en-GB")}</td>
+							<td>
+								{new Date(item.finished).toLocaleString(
+									"en-GB"
+								)}
+							</td>
 							<td>{item.timeString}</td>
 						</tr>
 					))}
 				</tbody>
 			</table>
+		);
+	}
+
+	return (
+		<main className={styles.history}>
+			<h2>Your study history</h2>
+			{content}
 		</main>
 	);
 };

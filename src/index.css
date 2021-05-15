@@ -28,9 +28,16 @@
 html {
 	font-size: 62.5%;
 }
+/* 43.75em === 700px by default */
 @media screen and (max-width: 43.75em) {
 	html {
 		font-size: 58%;
+	}
+}
+/* 31.25em === 500px by default */
+@media screen and (max-width: 31.25em) {
+	html {
+		font-size: 55%;
 	}
 }
 
@@ -66,9 +73,10 @@ p {
 
 /* Utility class */
 .invalid {
-	color: rgb(160, 33, 10);
+	color: var(--color-danger);
 	font-size: var(--font-medium);
 	font-weight: 700;
+	text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
 }
 input.invalid {
 	background-color: rgb(230, 154, 154);

@@ -25,6 +25,7 @@
 .nav ul li a,
 .nav ul li a:link,
 .nav ul li a:visited {
+	cursor: pointer;
 	color: var(--font-white);
 	text-decoration: none;
 }
@@ -38,8 +39,9 @@
 	width: 0%;
 	background-color: transparent;
 	border-radius: 0.2rem;
-	transition: all 0.3s ease-in-out;
+	transition: width 0.3s ease-in-out;
 }
+
 .nav ul li a:not(.login-btn):hover::after {
 	width: 100%;
 	background-color: var(--color-dark);
@@ -48,14 +50,9 @@
 .nav ul li .login-btn,
 .nav ul li .login-btn:link,
 .nav ul li .login-btn:visited {
+	cursor: pointer;
 	outline: 2px solid var(--color-dark);
 	background-color: var(--color-light);
 	color: var(--font-dark);
 	padding: 0.7rem;
-}
-
-.nav ul li .login-btn:hover,
-.nav ul li .login-btn:link:hover,
-.nav ul li .login-btn:visited:hover {
-	transform: translateY(-1px);
 }
