@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "../components/UI/button/Button";
-import Input from "../components/UI/input/Input";
-import Loader from "../components/UI/loader/Loader";
-import AuthContext from "../store/auth/AuthContext";
+import Button from "../UI/button/Button";
+import Input from "../UI/input/Input";
+import Loader from "../UI/loader/Loader";
+import AuthContext from "../../store/auth/AuthContext";
+import { signInUrl } from "../../utils/utils";
 import styles from "./Login.module.css";
 
 const Login = (props) => {
@@ -57,7 +58,7 @@ const Login = (props) => {
 		// After validation...
 		setLoading(true);
 		try {
-			const response = await fetch(context.signInUrl, {
+			const response = await fetch(signInUrl, {
 				method: "POST",
 				body: JSON.stringify({
 					email,
@@ -76,7 +77,8 @@ const Login = (props) => {
 		}
 		setLoading(false);
 		if (data) {
-			context.signIn(data.localId);
+			console.log(data);
+			context.signIn(data.localId, data.idToken);
 		}
 	};
 

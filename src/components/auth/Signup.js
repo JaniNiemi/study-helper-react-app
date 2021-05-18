@@ -1,8 +1,10 @@
 import { useContext, useState } from "react";
-import Button from "../components/UI/button/Button";
-import Input from "../components/UI/input/Input";
-import AuthContext from "../store/auth/AuthContext";
+import Button from "../UI/button/Button";
+import Input from "../UI/input/Input";
+import AuthContext from "../../store/auth/AuthContext";
 import styles from "./Login.module.css";
+import Loader from "../UI/loader/Loader";
+import { signUpUrl } from "../../utils/utils";
 
 const Signup = (props) => {
 	const [email, setEmail] = useState("");
@@ -14,13 +16,13 @@ const Signup = (props) => {
 	const [passwordConfirm, setPasswordConfirm] = useState("");
 	const [isPasswordConfirmValid, setIsPasswordConfirmValid] = useState(true);
 
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
 	const context = useContext(AuthContext);
 
 	const emailChangeHandler = (event) => {
 		setEmail(event.target.value);
-		console.log(context);
 	};
 
 	const passwordChangeHandler = (event) => {
@@ -29,11 +31,6 @@ const Signup = (props) => {
 
 	const passwordConfirmChangeHandler = (event) => {
 		setPasswordConfirm(event.target.value);
-	};
-
-	// Move to authprovider eventually...
-	const signup = async () => {
-		await context.signUp(email, password);
 	};
 
 	const checkFormValidity = () => {
@@ -51,21 +48,47 @@ const Signup = (props) => {
 			return false;
 		} else if (password !== passwordConfirm) {
 			setError("Passwords do not match");
-			setIsPasswordConfirmValid(false)
+			setIsPasswordConfirmValid(false);
 		} else {
 			return true;
 		}
 	};
 
-	const formSubmitHandler = (event) => {
+	const formSubmitHandler = async (event) => {
 		event.preventDefault();
 		setIsEmailValid(true);
 		setIsPasswordValid(true);
 		setIsPasswordConfirmValid(true);
 		const formIsValid = checkFormValidity();
 		if (!formIsValid) return;
-		signup();
+		// Send request to database after form validation
+		setLoading(true);
+		let data = null;
+		try {
+			const response = await fetch(signUpUrl, {
+				method: "POST",
+				body: JSON.stringify({
+					email,
+					password,
+					returnSecureToken: true,
+				}),
+			});
+			data = await response.json();
+			if (!response.ok) throw new Error(data.error.message);
+		} catch (error) {
+			console.log("error", error);
+			data = null;
+			setError(error.message || "Invalid input");
+		}
+		setLoading(false);
+		if (data) {
+			context.signIn(data.localId, data.idToken);
+		}
 	};
+
+	if (loading) {
+		return <Loader />;
+	}
 
 	return (
 		<form onSubmit={formSubmitHandler} className={styles.form}>

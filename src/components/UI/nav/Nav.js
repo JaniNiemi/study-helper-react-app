@@ -18,7 +18,7 @@ const Nav = () => {
 		</Link>
 	);
 
-	if (context.user !== "") {
+	if (context.user !== null) {
 		loginEl = (
 			<span onClick={logoutHandler} className={styles["login-btn"]}>
 				Logout

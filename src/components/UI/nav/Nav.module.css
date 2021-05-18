@@ -39,7 +39,7 @@
 	width: 0%;
 	background-color: transparent;
 	border-radius: 0.2rem;
-	transition: width 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
 
 .nav ul li a:not(.login-btn):hover::after {

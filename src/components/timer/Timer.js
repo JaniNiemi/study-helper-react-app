@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router";
 import AuthContext from "../../store/auth/AuthContext";
 import Button from "../UI/button/Button";
@@ -7,6 +7,7 @@ import Modal from "../UI/modal/Modal";
 import SuccessfulSession from "./SuccessfulSession";
 import styles from "./Timer.module.css";
 import TimerBar from "./TimerBar";
+import { timeFromMilliseconds, timerOutput } from "../../utils/utils";
 
 const Timer = () => {
 	const history = useHistory();
@@ -33,43 +34,9 @@ const Timer = () => {
 
 	const context = useContext(AuthContext);
 
-	const timeFromMilliseconds = (milliseconds) => {
-		const hours = Math.floor(milliseconds / 3600000);
-		const minutes = Math.floor((milliseconds - hours * 3600000) / 60000);
-		const seconds = Math.round(
-			((milliseconds - hours * 3600000 - ((hours * 3600000) % 3600)) /
-				1000) %
-				60
-		);
-
-		return {
-			hours,
-			minutes,
-			seconds,
-		};
-	};
-
 	const sessionNameChangeHandler = (event) => {
 		setSessionName(event.target.value);
 	};
-
-	const timerHandler = useCallback(() => {
-		const remainingTime = targetTime - new Date().getTime();
-
-		if (remainingTime < 0) {
-			setIsTimerSet(false);
-			setIsSessionFinished(true);
-			return;
-		}
-
-		const newTimer = timeFromMilliseconds(remainingTime);
-		setTimer(newTimer);
-
-		// set current timer as seconds
-		const secondsNow = remainingTime / 1000;
-		// calculate percentage
-		setBarWidth((secondsNow / initialSeconds) * 100);
-	}, [initialSeconds, targetTime]);
 
 	const hoursInputHandler = (event) => {
 		if (event.target.value > 23) {
@@ -137,13 +104,6 @@ const Timer = () => {
 		}
 	};
 
-	const timerOutput = (time) => {
-		const hours = time.hours > 9 ? time.hours : "0" + time.hours;
-		const minutes = time.minutes > 9 ? time.minutes : "0" + time.minutes;
-		const seconds = time.seconds > 9 ? time.seconds : "0" + time.seconds;
-		return `${hours}:${minutes}:${seconds}`;
-	};
-
 	const resetHandler = () => {
 		setIsTimerPaused(true);
 		timerPauseHandler(false);
@@ -173,23 +133,45 @@ const Timer = () => {
 			finished: new Date(),
 			sessionDuration: initialTime,
 			timeString: timerOutput(initialTime),
+		};
+		try {
+			const response = await fetch(
+				"https://study-helper-app-default-rtdb.europe-west1.firebasedatabase.app/" +
+					context.user +
+					".json",
+				{
+					method: "POST",
+					body: JSON.stringify(saveData),
+				}
+			);
+			if (!response.ok) throw new Error("Failed to save session data");
+		} catch (error) {
+			console.log("error", error.message);
 		}
-
-		await fetch(
-			"https://study-helper-app-default-rtdb.europe-west1.firebasedatabase.app/" +
-				context.user +
-				".json",
-			{
-				method: "POST",
-				body: JSON.stringify(saveData),
-			}
-		);
 		// Switch page to history once session is finished and saved
 		setIsSessionFinished(false);
 		history.push("/history");
 	};
 
 	useEffect(() => {
+		const timerHandler = () => {
+			const remainingTime = targetTime - new Date().getTime();
+
+			if (remainingTime < 0) {
+				setIsTimerSet(false);
+				setIsSessionFinished(true);
+				return;
+			}
+
+			const newTimer = timeFromMilliseconds(remainingTime);
+			setTimer(newTimer);
+
+			// set current timer as seconds
+			const secondsNow = remainingTime / 1000;
+			// calculate percentage
+			setBarWidth((secondsNow / initialSeconds) * 100);
+		};
+
 		let countdown;
 		if (isTimerSet && !isTimerPaused) {
 			countdown = setTimeout(() => timerHandler(), 1000);
@@ -197,7 +179,7 @@ const Timer = () => {
 		return () => {
 			clearTimeout(countdown);
 		};
-	}, [isTimerSet, timer, isTimerPaused, timerHandler, targetTime]);
+	}, [isTimerSet, timer, isTimerPaused, targetTime, initialSeconds]);
 
 	let modalContent = null;
 

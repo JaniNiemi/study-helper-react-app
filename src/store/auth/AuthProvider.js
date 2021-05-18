@@ -1,35 +1,35 @@
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import AuthContext from "./AuthContext";
 
 const initialState = {
-	// Refresh tokens? 
-	user: "",
+	user: null,
 	token: null,
-	signUpUrl:
-		"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAV99CpqWOjFq2LxBbn-630eT10R7BrGTg",
-	signInUrl:
-		"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAV99CpqWOjFq2LxBbn-630eT10R7BrGTg",
 };
 
 const authReducer = (state, action) => {
 	switch (action.type) {
 		case "SIGN_IN":
 			localStorage.setItem("user", action.payload.user);
+			localStorage.setItem("token", action.payload.token);
 			return {
 				...state,
 				user: action.payload.user,
+				token: action.payload.token,
 			};
 
 		case "LOGOUT":
 			localStorage.removeItem("user");
+			localStorage.removeItem("token");
 			return initialState;
 
 		case "CHECK":
 			const user = localStorage.getItem("user");
+			const token = localStorage.getItem("token");
 			if (user) {
 				return {
 					...state,
 					user,
+					token,
 				};
 			}
 			return state;
@@ -43,17 +43,17 @@ const authReducer = (state, action) => {
 const Authprovider = (props) => {
 	let [state, dispatch] = useReducer(authReducer, initialState);
 
-	const signInHandler = (user) => {
-		dispatch({ type: "SIGN_IN", payload: { user } });
+	const signInHandler = (user, token) => {
+		dispatch({ type: "SIGN_IN", payload: { user, token } });
 	};
 
 	const logoutHandler = () => {
 		dispatch({ type: "LOGOUT" });
 	};
 
-	const checkLoginHandler = () => {
+	const checkLoginHandler = useCallback(() => {
 		dispatch({ type: "CHECK" });
-	};
+	}, []);
 
 	const context = {
 		user: state.user,
