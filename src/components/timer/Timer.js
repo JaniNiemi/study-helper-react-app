@@ -7,6 +7,7 @@ import Modal from "../UI/modal/Modal";
 import SuccessfulSession from "./SuccessfulSession";
 import styles from "./Timer.module.css";
 import TimerBar from "./TimerBar";
+import {Prompt} from "react-router-dom"
 import { timeFromMilliseconds, timerOutput } from "../../utils/utils";
 
 const Timer = () => {
@@ -214,6 +215,7 @@ const Timer = () => {
 
 	return (
 		<React.Fragment>
+			<Prompt when={isTimerSet} message="Are you sure you want to leave the page? Unsaved data will be lost." />
 			{modalContent}
 			<main className={styles.timer}>
 				<h3>How long are you going to study today?</h3>
