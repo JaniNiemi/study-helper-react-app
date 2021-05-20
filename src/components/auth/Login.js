@@ -77,7 +77,6 @@ const Login = (props) => {
 		}
 		setLoading(false);
 		if (data) {
-			console.log(data);
 			context.signIn(data.localId, data.idToken);
 		}
 	};
