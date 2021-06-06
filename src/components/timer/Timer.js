@@ -13,8 +13,8 @@ import { timeFromMilliseconds, timerOutput } from "../../utils/utils";
 const Timer = () => {
 	const history = useHistory();
 
-	const [isTimerSet, setIsTimerSet] = useState(false);
-	const [isTimerPaused, setIsTimerPaused] = useState(false);
+	const [timerIsSet, setTimerIsSet] = useState(false);
+	const [timerIsPaused, setTimerIsPaused] = useState(false);
 	const [timer, setTimer] = useState(null);
 
 	const [hoursInput, setHoursInput] = useState(0);
@@ -25,7 +25,7 @@ const Timer = () => {
 	const [initialSeconds, setInitialSeconds] = useState(0);
 	const [barWidth, setBarWidth] = useState(0);
 
-	const [isSessionFinished, setIsSessionFinished] = useState(false);
+	const [sessionIsFinished, setSessionIsFinished] = useState(false);
 	const [sessionResetConfirm, setSessionResetConfirm] = useState(false);
 
 	const [sessionName, setSessionName] = useState("");
@@ -68,7 +68,7 @@ const Timer = () => {
 	};
 
 	const timerStartHandler = () => {
-		setIsTimerSet(true);
+		setTimerIsSet(true);
 
 		const milliseconds =
 			(Number(secondsInput) +
@@ -93,7 +93,7 @@ const Timer = () => {
 	};
 
 	const timerPauseHandler = (reset = true) => {
-		if (!isTimerPaused) {
+		if (!timerIsPaused) {
 			setPauseTime(new Date().getTime());
 		} else {
 			const unpauseTime = new Date().getTime();
@@ -101,20 +101,20 @@ const Timer = () => {
 		}
 		setTimer(timeFromMilliseconds(targetTime - new Date().getTime()));
 		if (reset) {
-			setIsTimerPaused((prevVal) => !prevVal);
+			setTimerIsPaused((prevVal) => !prevVal);
 		}
 	};
 
 	const resetHandler = () => {
-		setIsTimerPaused(true);
+		setTimerIsPaused(true);
 		timerPauseHandler(false);
 		setSessionResetConfirm(true);
 	};
 
 	const resetSessionHandler = (confirmed) => {
 		if (confirmed) {
-			setIsTimerSet(false);
-			setIsTimerPaused(false);
+			setTimerIsSet(false);
+			setTimerIsPaused(false);
 			setTimer(null);
 		}
 		setSessionResetConfirm(false);
@@ -141,7 +141,7 @@ const Timer = () => {
 			alert(
 				"Not logged in. Your data will not be saved. That functionality is work in progress."
 			);
-			setIsSessionFinished(false);
+			setSessionIsFinished(false);
 			return;
 		}
 
@@ -160,7 +160,7 @@ const Timer = () => {
 			console.log("error", error.message);
 		}
 		// Switch page to history once session is finished and saved
-		setIsSessionFinished(false);
+		setSessionIsFinished(false);
 		history.push("/history");
 	};
 
@@ -169,8 +169,8 @@ const Timer = () => {
 			const remainingTime = targetTime - new Date().getTime();
 
 			if (remainingTime < 0) {
-				setIsTimerSet(false);
-				setIsSessionFinished(true);
+				setTimerIsSet(false);
+				setSessionIsFinished(true);
 				return;
 			}
 
@@ -184,23 +184,23 @@ const Timer = () => {
 		};
 
 		let countdown;
-		if (isTimerSet && !isTimerPaused) {
+		if (timerIsSet && !timerIsPaused) {
 			countdown = setTimeout(() => timerHandler(), 1000);
 		}
 		return () => {
 			clearTimeout(countdown);
 		};
-	}, [isTimerSet, timer, isTimerPaused, targetTime, initialSeconds]);
+	}, [timerIsSet, timer, timerIsPaused, targetTime, initialSeconds]);
 
 	let modalContent = null;
 
 	/* Modal for when session has finished */
-	if (isSessionFinished) {
+	if (sessionIsFinished) {
 		modalContent = (
 			<Modal
 				title="Congratulations on finishing your study session!"
 				onConfirm={saveSession}
-				onClose={() => setIsSessionFinished(false)}
+				onClose={() => setSessionIsFinished(false)}
 			>
 				<SuccessfulSession
 					sessionName={sessionName}
@@ -226,7 +226,7 @@ const Timer = () => {
 	return (
 		<React.Fragment>
 			<Prompt
-				when={isTimerSet}
+				when={timerIsSet}
 				message="Are you sure you want to leave the page? Unsaved data will be lost."
 			/>
 			{modalContent}
@@ -242,7 +242,7 @@ const Timer = () => {
 							step: "1",
 							id: "hours",
 						}}
-						disabled={isTimerSet}
+						disabled={timerIsSet}
 						value={hoursInput}
 						onChangeHandler={hoursInputHandler}
 					/>
@@ -256,7 +256,7 @@ const Timer = () => {
 							step: "1",
 							id: "minutes",
 						}}
-						disabled={isTimerSet}
+						disabled={timerIsSet}
 						value={minutesInput}
 						onChangeHandler={minutesInputHandler}
 					/>
@@ -270,32 +270,32 @@ const Timer = () => {
 							step: "1",
 							id: "seconds",
 						}}
-						disabled={isTimerSet}
+						disabled={timerIsSet}
 						value={secondsInput}
 						onChangeHandler={secondsInputHandler}
 					/>
 				</div>
 				<Button
-					disabled={isTimerSet}
+					disabled={timerIsSet}
 					onClickHandler={timerStartHandler}
 				>
 					Start
 				</Button>
 				<Button
 					onClickHandler={timerPauseHandler}
-					disabled={!isTimerSet}
+					disabled={!timerIsSet}
 				>
 					<i className="fa fa-play" aria-hidden="true"></i>/
 					<i className="fa fa-pause" aria-hidden="true"></i>
 				</Button>
-				<Button onClickHandler={resetHandler} disabled={!isTimerSet}>
+				<Button onClickHandler={resetHandler} disabled={!timerIsSet}>
 					Reset
 				</Button>
-				{isTimerSet && (
+				{timerIsSet && (
 					<div className={styles.time}>{timerOutput(timer)}</div>
 				)}
-				{isTimerSet && (
-					<TimerBar isPaused={isTimerPaused} width={barWidth} />
+				{timerIsSet && (
+					<TimerBar isPaused={timerIsPaused} width={barWidth} />
 				)}
 			</main>
 		</React.Fragment>
