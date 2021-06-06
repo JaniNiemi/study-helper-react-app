@@ -120,15 +120,15 @@ const Timer = () => {
 		setSessionResetConfirm(false);
 	};
 
-	const handleSessionName = () => {
-		if (sessionName.trim() === "") {
-			return "Session finished in " + new Date().toLocaleDateString();
-		} else {
-			return sessionName;
-		}
-	};
-
 	const saveSession = async () => {
+		const handleSessionName = () => {
+			if (sessionName.trim() === "") {
+				return "Session finished " + new Date().toLocaleDateString();
+			} else {
+				return sessionName;
+			}
+		};
+		console.log("SAVING???");
 		const saveData = {
 			sessionName: handleSessionName(),
 			finished: new Date(),
@@ -138,10 +138,17 @@ const Timer = () => {
 
 		// if user is not logged in
 		if (context.user === null) {
-			alert(
-				"Not logged in. Your data will not be saved. That functionality is work in progress."
+			let continueToLogin = window.confirm(
+				"Not logged in. Login to save your session?"
 			);
 			setSessionIsFinished(false);
+			if (continueToLogin) {
+				localStorage.setItem(
+					"studySessionData",
+					JSON.stringify(saveData)
+				);
+				history.push("/login");
+			}
 			return;
 		}
 
@@ -163,6 +170,46 @@ const Timer = () => {
 		setSessionIsFinished(false);
 		history.push("/history");
 	};
+
+	// Check if unsaved study session data exists in localStorage
+	useEffect(() => {
+		let unsavedSession = JSON.parse(
+			localStorage.getItem("studySessionData")
+		);
+
+		// Delete study session if user went to login page but returned
+		if (context.user === null) {
+			localStorage.removeItem("studySessionData");
+			return;
+		}
+
+		if (unsavedSession) {
+			console.log("Unsaved session", unsavedSession);
+
+			fetch(
+				"https://study-helper-app-default-rtdb.europe-west1.firebasedatabase.app/" +
+					context.user +
+					".json",
+				{
+					method: "POST",
+					body: JSON.stringify(unsavedSession),
+				}
+			)
+				.then((res) => {
+					// console.log(res);
+					if (!res.ok) {
+						throw new Error("Failed to save data");
+					}
+				})
+				.catch((error) => {
+					console.log("ERROR", error);
+				})
+				.finally(() => {
+					localStorage.removeItem("studySessionData");
+					history.push("/history");
+				});
+		}
+	}, [context.user, history]);
 
 	useEffect(() => {
 		const timerHandler = () => {
